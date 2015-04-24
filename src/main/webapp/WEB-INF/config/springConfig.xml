@@ -32,7 +32,7 @@
 <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 	<property name="dataSource" ref="dataSource" />
 	<property name="typeAliasesPackage" value="com.topline.model"/>
-	<property name="mapperLocations" value="classpath*:com/topline/mappers/*.xml" />
+	<property name="mapperLocations" value="classpath*:com/topline/dbMaps/*.xml" />
 </bean>
 
 <bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
@@ -47,5 +47,11 @@
 <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 	<property name="dataSource" ref="dataSource" />
 </bean>
-
+<bean id="standardJsonResponseBean"
+		class="com.topline.web.StandardJsonResponseImpl">
+	</bean>	
+	
+	<bean id="jacksonObjectMapperBean"
+		class="org.codehaus.jackson.map.ObjectMapper">
+	</bean>
 </beans>

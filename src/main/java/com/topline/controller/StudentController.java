@@ -1,56 +1,79 @@
 package com.topline.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.topline.model.Student;
-import com.topline.model.StudentLogin;
-import com.topline.service.StudentService;
+import com.topline.utils.GlobalCC;
+import com.topline.web.StandardJsonResponse;
+
 @Controller
-@SessionAttributes("student")
-public class StudentController {
-	
-	@Autowired
-	private StudentService studentService;
-	
-	@RequestMapping(value="/signup", method=RequestMethod.GET)
-	public String signup(Model model) {
-		Student student = new Student();
-		model.addAttribute("student", student);
-		return "signup";
-	}
+public class StudentController extends BaseController {
 	
 	@RequestMapping(value="/signup", method=RequestMethod.POST)
-	public String signup(@ModelAttribute("student") Student student, Model model) {
-		if(studentService.getStudentByUserName(student.getUserName())) {
-			model.addAttribute("message", "User Name exists. Try another user name");
-			return "signup";
-		} else {
-			studentService.insertStudent(student);
-			model.addAttribute("message", "Saved student details");
-			return "redirect:login.html";
+	private @ResponseBody StandardJsonResponse savePettyCashCashier(
+			HttpServletRequest request) {
+		try {
+
+			Student student = new Student();
+			studentMapper.insert(student);
+			jsonResponse.addMessage("message", SAVED_SUCCESSFULLY);
+
+			jsonResponse.setSuccess(true);
+			return jsonResponse;
+		} catch (Exception e) {
+			jsonResponse.setData(null);
+			jsonResponse.setSuccess(true);
+			jsonResponse.addMessage("message", e.getLocalizedMessage());
+			return jsonResponse;
 		}
 	}
-	
-	@RequestMapping(value="/login", method=RequestMethod.GET)
-	public String login(Model model) {
-		StudentLogin studentLogin = new StudentLogin();
-		model.addAttribute("studentLogin", studentLogin);
-		return "login";
-	}
-	
-	@RequestMapping(value="/login", method=RequestMethod.POST)
-	public String login(@ModelAttribute("studentLogin") StudentLogin studentLogin) {
-		boolean found = studentService.getStudentByLogin(studentLogin.getUserName(), studentLogin.getPassword());
-		if (found) {				
-			return "success";
-		} else {				
-			return "failure";
+	@RequestMapping(value="/signup", method=RequestMethod.GET)
+	private @ResponseBody
+	StandardJsonResponse fetchfetchIssue(HttpServletRequest request) {
+		 System.out.println("testing abc.....");
+		try {		
+
+			String userid = null;
+			Student student = new Student();
+			HashMap<String, Object> data = new HashMap<String, Object>();
+			Map<String, Object> map = new HashMap<String, Object>();
+			String criteria = GlobalCC.CheckNullValues(request
+					.getParameter("criteria"));
+			String searchString = GlobalCC.CheckNullValues(request
+					.getParameter("txtSearch"));
+			String date = GlobalCC.CheckNullValues(request
+					.getParameter("date"));
+			
+			String limit = GlobalCC.CheckNullValues(request
+					.getParameter("limit"));
+			String start = GlobalCC.CheckNullValues(request
+					.getParameter("start"));
+			if (limit == null) {
+				limit = "50";
+			}
+			if (start == null) {
+				start = "0";
+			}	
+			List<Student> list=studentMapper.selectByExample(student);
+			jsonResponse.setSuccess(true);
+			return jsonResponse;
+		} catch (Exception e) {
+			e.printStackTrace();
+			jsonResponse.setData(null);
+			jsonResponse.setSuccess(false);
+			jsonResponse
+					.addMessage(
+							"message",
+							e.getLocalizedMessage() == null ? "OOPS ! ERROR:: Occured while fetching ............."
+									: e.getLocalizedMessage());
+			return jsonResponse;
 		}
 	}
 }
