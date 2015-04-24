@@ -1,15 +1,18 @@
 package com.topline.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.topline.model.Student;
+import com.topline.model.StudentExample;
 import com.topline.utils.GlobalCC;
 import com.topline.web.StandardJsonResponse;
 
@@ -41,7 +44,7 @@ public class StudentController extends BaseController {
 		try {		
 
 			String userid = null;
-			Student student = new Student();
+			
 			HashMap<String, Object> data = new HashMap<String, Object>();
 			Map<String, Object> map = new HashMap<String, Object>();
 			String criteria = GlobalCC.CheckNullValues(request
@@ -60,8 +63,18 @@ public class StudentController extends BaseController {
 			}
 			if (start == null) {
 				start = "0";
-			}	
-			List<Student> list=studentMapper.selectByExample(student);
+			}
+			StudentExample studentExample= new StudentExample();
+			List<Student> list=studentMapper.selectByExample(studentExample);
+			System.out.println("kimkahunja.... "+ list.size());
+			System.out.println("kimkahunja22222.... "+ list.get(0));
+			data.put("results", list);
+			
+			Student student=list.get(0);
+			System.out.println("kimkahunja---data.... "+ student.getEmailaddress());
+			System.out.println("kimkahunja---data.... "+ student.getFirstname());
+			System.out.println("kimkahunja---data.... "+ student.getUsername());
+			System.out.println("kimkahunja---data.... "+ student.getId());
 			jsonResponse.setSuccess(true);
 			return jsonResponse;
 		} catch (Exception e) {
